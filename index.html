@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html>
+<body>
+<script language="javascript" type="text/javascript">
+<!--
+/*
+  Straight flush > Four > Full > Flush > Straight > Three > Two pair > Pair > High card
+*/
+
+function generate_card(list)
+{
+  var result = false;
+  var result2;
+  var result3;
+  var i;
+  var j;
+
+  while(!result)
+  {
+    result2 = false;
+    result3 = true;
+    i = Math.floor(Math.random() * 13) + 1;
+    j = Math.floor(Math.random() * 4) + 1;
+    
+    for(var k=0; (k < list.length) && (!result2) && (!result3); k++)
+    {
+      result3 = false;
+      if(list[k] == [i, j])
+        result2 = true;
+      if(k == list.length -1 && !result2)
+        result3 = true;
+    }
+    result = result3;
+  }
+  if(j == 1)
+    j = "spades";
+  else if(j == 2)
+    j = "hearts";
+  else if(j == 3)
+    j = "diamonds";
+  else if(j == 4)
+    j = "clubs";
+  return [i, j];
+}
+
+function generate_hand(number)
+{
+  list = [];
+  for(i = 1; i <= number; i++)
+  {
+    list[i] = generate_card(list);
+  }
+  for(i = 1; i <= number; i++)
+  {
+    console.log(list[i]);
+  }
+  return list;
+}
+
+function error(arg)
+{
+  console.log(arg);
+}
+
+function hand (list){
+
+  var cards12 = [];
+  for(i = 0; i < 13; i++)
+    cards12[i] = 0;
+
+  cards3 = [];
+  for(i = 0; i < 4; i++)
+    cards3[i] = 0;
+
+  for(i = 0; i < list.length; i++){
+    cards12[i] += 1;
+    cont = cards12[list[i][1]];
+    cards12[list[i][1]] += 1;
+    increase3(cont);
+  }
+
+  bestplay(cards12, cards3);
+}
+
+function increase3(number)
+{
+  switch(number){
+
+    case 0:
+      cards3[0] += 1;
+      break;
+
+    case 1:
+      cards3[0] -= 1;
+      cards3[1] += 1;
+      break;
+
+    case 2:
+      cards3[1] -= 1;
+      cards3[2] += 1;
+      break;
+
+    case 3:
+      cards3[2] -= 1;
+      cards3[3] += 1;
+      break;
+
+    default:
+      error("Error en increase3 con argumento del switch = " + number);
+      break;
+  }
+}
+
+function bestplay(cards, count)
+{
+
+  switch(cards[0])
+  {
+
+    case 5:
+
+      if (count == [1,0,0,1])
+      {
+        hc = 0;
+        for(i = 1; !result; i++)
+        {
+          result = (i == 4);
+          hc = i;
+        }
+        play = "Poker de " + hc;
+        console.log(play);
+      }
+
+      else if (count == [0,1,1,0])
+      {
+        hc = 0;
+        hc2 = 0;
+        for(i = 1; !result && !result2 ; i++)
+        {
+          if(i == 3)
+          {
+           result = true;
+           hc = i; 
+          }
+          if(i == 2)
+          {
+           result2 = true;
+           hc2 = i; 
+          }
+        }
+        play = "Full de " + hc + "(trio) y " + hc2 + "pareja";
+        console.log(play);
+      }
+
+      else if (count == [2,0,1,0])
+      {
+        hc = 0;
+        for(i = 1; !result; i++)
+        {
+          result = (i == 3);
+          hc = i;
+        }
+        play = "Trio de " + hc;
+        console.log(play);
+      }
+
+      else if (count == [1,2,0,0])
+      {
+        hc = 0;
+        hc2 = 0;
+        for(i = 1; !result && !result2 ; i++)
+        {
+          if(i == 2)
+          {
+           result = true;
+           hc = i; 
+          }
+          if(i == 2 && result)
+          {
+           result2 = true;
+           hc2 = i; 
+          }
+        }
+        play = "Parejas dobles " + hc + "y " + hc2;
+        console.log(play);
+      }
+
+      else if (count == [3,1,0,0])
+      {
+        hc = 0;
+        for(i = 1; !result; i++)
+        {
+          result = (i == 2);
+          hc = i;
+        }
+        play = "Pareja de " + hc;
+        console.log(play);
+      }
+
+      break;
+
+    case 6:
+
+      if (count == [2,0,0,1])
+      {
+        hc = 0;
+        for(i = 1; !result; i++)
+        {
+          result = (i == 4);
+          hc = i;
+        }
+        play = "Poker de " + hc;
+        console.log(play);
+      }
+
+      else if (count == [1,1,1,0])
+      {
+        hc = 0;
+        hc2 = 0;
+        for(i = 1; !result && !result2 ; i++)
+        {
+          if(i == 3)
+          {
+           result = true;
+           hc = i; 
+          }
+          if(i == 2)
+          {
+           result2 = true;
+           hc2 = i; 
+          }
+        }
+        play = "Full de " + hc + "(trio) y " + hc2 + "pareja";
+        console.log(play);
+      }
+
+      else if (count == [3,0,1,0])
+      {
+        hc = 0;
+        for(i = 1; !result; i++)
+        {
+          result = (i == 3);
+          hc = i;
+        }
+        play = "Trio de " + hc;
+        console.log(play);
+      }
+
+      else if (count == [2,2,0,0])
+      {
+        hc = 0;
+        hc2 = 0;
+        for(i = 1; !result && !result2 ; i++)
+        {
+          if(i == 2)
+          {
+           result = true;
+           hc = i; 
+          }
+          if(i == 2 && result)
+          {
+           result2 = true;
+           hc2 = i; 
+          }
+        }
+        play = "Parejas dobles " + hc + "y " + hc2;
+        console.log(play);
+      }
+
+      else if (count == [4,1,0,0])
+      {
+        hc = 0;
+        for(i = 1; !result; i++)
+        {
+          result = (i == 2);
+          hc = i;
+        }
+        play = "Pareja de " + hc;
+        console.log(play);
+      }
+ 
+      break;
+
+    case 7:
+
+      if (count == [3,0,0,1])
+      {
+        hc = 0;
+        for(i = 1; !result; i++)
+        {
+          result = (i == 4);
+          hc = i;
+        }
+        play = "Poker de " + hc;
+        console.log(play);
+      }
+
+      else if (count == [2,1,1,0])
+      {
+        hc = 0;
+        hc2 = 0;
+        for(i = 1; !result && !result2 ; i++)
+        {
+          if(i == 3)
+          {
+           result = true;
+           hc = i; 
+          }
+          if(i == 2)
+          {
+           result2 = true;
+           hc2 = i; 
+          }
+        }
+        play = "Full de " + hc + "(trio) y " + hc2 + "pareja";
+        console.log(play);
+      }
+
+      else if (count == [4,0,1,0])
+      {
+        hc = 0;
+        for(i = 1; !result; i++)
+        {
+          result = (i == 3);
+          hc = i;
+        }
+        play = "Trio de " + hc;
+        console.log(play);
+      }
+
+      else if (count == [3,2,0,0])
+      {
+        hc = 0;
+        hc2 = 0;
+        for(i = 1; !result && !result2 ; i++)
+        {
+          if(i == 2)
+          {
+           result = true;
+           hc = i; 
+          }
+          if(i == 2 && result)
+          {
+           result2 = true;
+           hc2 = i; 
+          }
+        }
+        play = "Parejas dobles " + hc + "y " + hc2;
+        console.log(play);
+      }
+
+      else if (count == [5,1,0,0])
+      {
+        hc = 0;
+        for(i = 1; !result; i++)
+        {
+          result = (i == 2);
+          hc = i;
+        }
+        play = "Pareja de " + hc;
+        console.log(play);
+      }
+
+      break;
+ 
+    default:
+      error("Error en el numero de cartas en la mano = " + cards[0]);
+      break;
+  }
+}
+
+
+hand(generate_hand(5));
+//-->
+</script>
+</body>
+</html> 
+
