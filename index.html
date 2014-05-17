@@ -10,6 +10,8 @@
 
 var palo;
 var jugada = -1;
+var mano;
+var ret;
 
 function arraysIdentical(a, b)
 {
@@ -153,6 +155,7 @@ function increase4(number, list)
 function bestplay(cards, count, list)
 {
   console.log(list);
+  mano = list;
   switch(cards[0])
   {
 
@@ -160,12 +163,7 @@ function bestplay(cards, count, list)
 	  
 	    if(escaleraPalo(list)[0] == 1)
 	    {
-	      jugada = 1;
-	      s = escalera(cards)[1];
-        if(s == 14)
-          console.log("Escalera de palo \"real\": 10 a As" + " (" + palo + ")");
-        else
-          console.log("Escalera de palo de " + (s-4) + " a " + (s) + " (" + palo + ")");
+	      printEscaleraPalo(cards);
 	    }
 	    
       else if (arraysIdentical(count, [0,1,0,0,1]))
@@ -182,12 +180,7 @@ function bestplay(cards, count, list)
 	  
       else if (((escalera(cards))[0]) == 1)
       {
-	      jugada = 4;
-        s = escalera(cards)[1];
-        if(s == 14)
-          console.log("Escalera \"real\": 10 a As");
-        else
-          console.log("Escalera de " + (s-4) + " a " + (s));
+        printEscalera(cards);
       }
 
       else if (arraysIdentical(count, [0,2,0,1,0]))
@@ -239,14 +232,9 @@ function bestplay(cards, count, list)
     case 6:
 
       if(escaleraPalo(list)[0] == 1)
-	  {
-	    jugada = 1;
-	    s = escalera(cards)[1];
-      if(s == 14)
-        console.log("Escalera de palo \"real\": 10 a As" + " (" + palo + ")");
-      else
-        console.log("Escalera de palo de " + (s-4) + " a " + (s) + " (" + palo + ")");
-	  }
+      {
+  	    printEscaleraPalo(cards);
+	    }
 	  
       else if (arraysIdentical(count, [0,2,0,0,1]))
       {
@@ -262,12 +250,7 @@ function bestplay(cards, count, list)
 	  
       else if (((escalera(cards))[0]) == 1)
       {
-	    jugada = 4;
-        s = escalera(cards)[1];
-        if(s == 14)
-          console.log("Escalera \"real\": 10 a As");
-        else
-          console.log("Escalera de " + (s-4) + " a " + (s));
+	      printEscalera(cards);
       }
 
       else if (arraysIdentical(count, [0,3,0,1,0]))
@@ -300,12 +283,7 @@ function bestplay(cards, count, list)
 
       if(escaleraPalo(list)[0] == 1)
       {
-        jugada = 1;
-	      s = escalera(cards)[1];
-        if(s == 14)
-          console.log("Escalera de palo \"real\": 10 a As" + " (" + palo + ")");
-        else
-          console.log("Escalera de palo de " + (s-4) + " a " + (s) + " (" + palo + ")");
+        printEscaleraPalo(cards);
       }
 	  
       else if (arraysIdentical(count, [0,3,0,0,1]))
@@ -322,12 +300,7 @@ function bestplay(cards, count, list)
 	  
       else if (((escalera(cards))[0]) == 1)
       {
-	    jugada = 4;
-        s = escalera(cards)[1];
-        if(s == 14)
-          console.log("Escalera \"real\": 10 a As");
-        else
-          console.log("Escalera de " + (s-4) + " a " + (s));
+  	    printEscalera(cards);
       }
 
       else if (arraysIdentical(count, [0,4,0,1,0]))
@@ -377,8 +350,8 @@ function poker(cards, count)
     result = (cards[i] == 4);
     hc = i;
   }
-  play = "Poker de " + hc;
-  console.log(play);
+  ret = "Poker de " + hc;
+  console.log(ret);
 }
 
 function full(cards, count)
@@ -400,8 +373,8 @@ function full(cards, count)
     hc2 = i; 
     }
   }
-  play = "Full de " + hc + " (trio) y " + hc2 + " (pareja)";
-  console.log(play);
+  ret = "Full de " + hc + " (trio) y " + hc2 + " (pareja)";
+  console.log(ret);
 }
 
 function trio(cards, count)
@@ -413,8 +386,8 @@ function trio(cards, count)
     result = (cards[i] == 3);
     hc = i;
   }
-  play = "Trio de " + hc;
-  console.log(play);
+  ret = "Trio de " + hc;
+  console.log(ret);
 }
 
 function doble(cards, count)
@@ -436,8 +409,8 @@ function doble(cards, count)
       hc2 = i; 
     }
   }
-  play = "Parejas dobles " + hc + " y " + hc2;
-  console.log(play);
+  ret = "Parejas dobles " + hc + " y " + hc2;
+  console.log(ret);
 }
 
 function pareja(cards, count)
@@ -449,8 +422,8 @@ function pareja(cards, count)
     result = (cards[i] == 2);
     hc = i;
   }
-  play = "Pareja de " + hc;
-  console.log(play);
+  ret = "Pareja de " + hc;
+  console.log(ret);
 }
 
 function escalera(cards)
@@ -483,6 +456,22 @@ function escalera(cards)
   {
     return [0, 0];
   }
+}
+
+function printEscalera(cards)
+{
+	  jugada = 4;
+    s = escalera(cards)[1];
+    if(s == 14)
+    {
+      ret = "Escalera \"real\": 10 a As";
+      console.log(ret);
+    }
+    else
+    {
+     ret = "Escalera de " + (s-4) + " a " + (s);
+     console.log(ret);
+    }
 }
 
 function escaleraPalo(list)
@@ -529,6 +518,21 @@ function escaleraPalo(list)
   palo = temp;
   return escalera(start_arrays(nList)[0]);
 }
+function printEscaleraPalo(cards)
+{
+  jugada = 1;
+	s = escalera(cards)[1];
+  if(s == 14)
+  {
+    ret = "Escalera de palo \"real\": 10 a As" + " (" + palo + ")";
+    console.log(ret);
+  }
+  else
+  {
+    ret = "Escalera de palo de " + (s-4) + " a " + (s) + " (" + palo + ")";
+    console.log(ret);
+  }
+}
 
 /*
 #####################################################################
@@ -564,6 +568,21 @@ console.log("\n");
 hand(generate_hand(5));
 console.log("\n");
 console.log("\n");
+
+document.write("Cartas en mano:");
+document.write("<br>");
+document.write("<br>");
+for(var i = 1; i < list.length; i++)
+{
+  document.write(list[i][0]);
+  document.write(" ");
+  document.write(list[i][1]);
+  document.write("<br>");
+}
+document.write("<br>");
+document.write("<br>");
+
+document.write(ret);
 //-->
 </script>
 </body>
