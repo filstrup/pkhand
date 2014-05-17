@@ -211,7 +211,27 @@ function bestplay(cards, count, list)
 	    else
 	    {
 	      jugada = 0;
-	      console.log("No hay jugada");
+        var j = 13;
+        var i = 0;
+        console.log(cards);
+        if(cards[1] != 0)
+          i = "As"
+        else
+        {
+          while(i == 0)
+          {
+            if(cards[j] != 0)
+              i = j;
+            j --;
+          }
+        }
+        if(i == 11)
+          i = "J";
+        else if(i == 12)
+          i = "Q";
+        else if(i == 13)
+          i = "K";
+	      console.log("Carta mas alta: " + i);
 	    }
 
       break;
@@ -268,25 +288,25 @@ function bestplay(cards, count, list)
         pareja(cards, count);
       }
 	  
-	  else
-	  {
-	    jugada = 0;
-	    console.log("No hay jugada");
-	  }
+	    else
+	    {
+	      jugada = 0;
+	      console.log("No hay jugada");
+	    }
 	  
       break;
 
     case 7:
 
       if(escaleraPalo(list)[0] == 1)
-	  {
-	    jugada = 1;
-	    s = escalera(cards)[1];
-      if(s == 14)
-        console.log("Escalera de palo \"real\": 10 a As" + " (" + palo + ")");
-      else
-        console.log("Escalera de palo de " + (s-4) + " a " + (s) + " (" + palo + ")");
-	  }
+      {
+        jugada = 1;
+	      s = escalera(cards)[1];
+        if(s == 14)
+          console.log("Escalera de palo \"real\": 10 a As" + " (" + palo + ")");
+        else
+          console.log("Escalera de palo de " + (s-4) + " a " + (s) + " (" + palo + ")");
+      }
 	  
       else if (arraysIdentical(count, [0,3,0,0,1]))
       {
@@ -507,8 +527,6 @@ function escaleraPalo(list)
 	}
   }
   palo = temp;
-  console.log("nList = " + nList);
-  console.log(start_arrays(nList)[0]);
   return escalera(start_arrays(nList)[0]);
 }
 
@@ -518,6 +536,7 @@ function escaleraPalo(list)
 #####################################################################
 */
 
+/*
 hand([5, [1, "hearts"], [10, "hearts"], [11, "hearts"], [12, "hearts"], [13, "hearts"]]);
 console.log("\n");
 console.log("\n");
@@ -534,7 +553,17 @@ hand([6, [1, "hearts"], [10, "hearts"], [11, "hearts"], [12, "diamonds"], [13, "
 console.log("\n");
 console.log("\n");
 hand([7, [1, "hearts"], [10, "hearts"], [11, "spades"], [12, "hearts"], [13, "hearts"], [9, "hearts"], [8, "hearts"]]);
+*/
 
+hand(generate_hand(5));
+console.log("\n");
+console.log("\n");
+hand(generate_hand(5));
+console.log("\n");
+console.log("\n");
+hand(generate_hand(5));
+console.log("\n");
+console.log("\n");
 //-->
 </script>
 </body>
