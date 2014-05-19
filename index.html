@@ -35,52 +35,66 @@ function error(arg)
 #####################################################################
 */
 
-function generate_card(list)
+function generate_card()
 {
-  var result = false;
-  var result2;
-  var result3;
   var i;
   var j;
+  
+  i = Math.floor(Math.random() * 13) + 1;
+  j = Math.floor(Math.random() * 4) + 1;
 
-  while(!result)
-  {
-    result2 = false;
-    result3 = true;
-    i = Math.floor(Math.random() * 13) + 1;
-    j = Math.floor(Math.random() * 4) + 1;
-    
-    for(var k=0; (k < list.length) && (!result2) && (!result3); k++)
-    {
-      result3 = false;
-      if(list[k] == [i, j])
-        result2 = true;
-      if(k == list.length -1 && !result2)
-        result3 = true;
-    }
-    result = result3;
-  }
-  if(j == 1)
-    j = "spades";
-  else if(j == 2)
-    j = "hearts";
-  else if(j == 3)
-    j = "diamonds";
-  else if(j == 4)
-    j = "clubs";
   return [i, j];
 }
 
 function generate_hand(number)
 {
   list = [];
+  var result;
+  var tmp;
   for(i = 1; i <= number; i++)
   {
-    list[i] = generate_card(list);
+    result = false;
+    if(i == 1)
+    {
+      list[i] = generate_card();
+    }
+    else
+    {
+      while(!result)
+      {
+        result = true;
+        tmp = generate_card();
+        for(j = 1; j < list.length && result; j++)
+        {
+          if(list[j][0] == tmp[0] && list[j][1] == tmp[1])
+		    result = false;
+        }
+	  }
+	  list[i] = tmp;
+    }
+  }
+  for(i = 1; i <= number; i++)
+  {
+    if(list[i][1] == 1)
+      list[i][1] = "spades";
+    else if(list[i][1] == 2)
+      list[i][1] = "hearts";
+    else if(list[i][1] == 3)
+      list[i][1] = "diamonds";
+    else if(list[i][1] == 4)
+      list[i][1] = "clubs";
   }
   for(i = 1; i <= number; i++)
   {
     console.log(list[i]);
+  }
+  for(i = 1; i < list.length; i++)
+  {
+    for(j = i+1; j < list.length -1; j++)
+	{
+      if(arraysIdentical(list[i], list[j]))
+	    window.alert("CARTAS REPETIDAS");
+	}
   }
   return list;
 }
@@ -156,182 +170,79 @@ function bestplay(cards, count, list)
 {
   console.log(list);
   mano = list;
-  switch(cards[0])
+  
+  if(escaleraPalo(list)[0] == 1)
   {
+    jugada = 1;
+    printEscaleraPalo(cards);
+  }
+  
+  else if (arraysIdentical(count, [0,cards[0] - 4,0,0,1]))
+  {
+    jugada = 2;
+	poker(cards, count); 
+  }
+  
+  else if (arraysIdentical(count, [0,cards[0] - 5,1,1,0]))
+  {
+    jugada = 3;
+    full(cards, count);
+  }
+  else if (flush(list)[0] == 1)
+  {
+    jugada = 4;
+	printFlush(flush(list)[1]);
+  }
+  else if (escalera(cards)[0] == 1)
+  {
+    jugada = 5;
+    printEscalera(cards);
+  }
+  
+  else if (arraysIdentical(count, [0,cards[0] - 3,0,1,0]))
+  {
+    jugada = 6;
+    trio(cards, count);
+  }
 
-    case 5:
-	  
-	    if(escaleraPalo(list)[0] == 1)
-	    {
-	      printEscaleraPalo(cards);
-	    }
-	    
-      else if (arraysIdentical(count, [0,1,0,0,1]))
-      {
-	      jugada = 2;
-        poker(cards, count); 
-      }
+  else if (arraysIdentical(count, [0,cards[0] - 4,2,0,0]))
+  {
+    jugada = 7;
+    doble(cards, count);
+  }
 
-      else if (arraysIdentical(count, [0,0,1,1,0]))
+  else if (arraysIdentical(count, [0,cards[0] - 2,1,0,0]))
+  {
+    jugada = 8;
+    pareja(cards, count);
+  }
+  
+  else
+  {
+    jugada = 9;
+    var j = 13;
+    var i = 0;
+    console.log(cards);
+    if(cards[1] != 0)
+      i = "As";
+    else
+    {
+      while(i == 0)
       {
-	      jugada = 3;
-        full(cards, count);
+        if(cards[j] != 0)
+          i = j;
+          j --;
       }
-	  
-      else if (((escalera(cards))[0]) == 1)
-      {
-        printEscalera(cards);
-      }
-
-      else if (arraysIdentical(count, [0,2,0,1,0]))
-      {
-	      jugada = 5;
-        trio(cards, count);
-      }
-
-      else if (arraysIdentical(count, [0,1,2,0,0]))
-      {
-	      jugada = 6;
-        doble(cards, count);
-      }
-
-      else if (arraysIdentical(count, [0,3,1,0,0]))
-      {
-	      jugada = 7;
-        pareja(cards, count);
-      }
-	  
-	    else
-	    {
-	      jugada = 0;
-        var j = 13;
-        var i = 0;
-        console.log(cards);
-        if(cards[1] != 0)
-          i = "As"
-        else
-        {
-          while(i == 0)
-          {
-            if(cards[j] != 0)
-              i = j;
-            j --;
-          }
-        }
-        if(i == 11)
-          i = "J";
-        else if(i == 12)
-          i = "Q";
-        else if(i == 13)
-          i = "K";
-	      console.log("Carta mas alta: " + i);
-	    }
-
-      break;
-
-    case 6:
-
-      if(escaleraPalo(list)[0] == 1)
-      {
-  	    printEscaleraPalo(cards);
-	    }
-	  
-      else if (arraysIdentical(count, [0,2,0,0,1]))
-      {
-	    jugada = 2;
-        poker(cards, count);
-      }
-
-      else if (arraysIdentical(count, [0,1,1,1,0]))
-      {
-	    jugada = 3;
-        full(cards, count);
-      }
-	  
-      else if (((escalera(cards))[0]) == 1)
-      {
-	      printEscalera(cards);
-      }
-
-      else if (arraysIdentical(count, [0,3,0,1,0]))
-      {
-	    jugada = 5;
-        trio(cards, count);
-      }
-
-      else if (arraysIdentical(count, [0,2,2,0,0]))
-      {
-	    jugada = 6;
-        doble(cards, count);
-      }
-
-      else if (arraysIdentical(count, [0,4,1,0,0]))
-      {
-	    jugada = 7;
-        pareja(cards, count);
-      }
-	  
-	    else
-	    {
-	      jugada = 0;
-	      console.log("No hay jugada");
-	    }
-	  
-      break;
-
-    case 7:
-
-      if(escaleraPalo(list)[0] == 1)
-      {
-        printEscaleraPalo(cards);
-      }
-	  
-      else if (arraysIdentical(count, [0,3,0,0,1]))
-      {
-	    jugada = 2;
-        poker(cards, count);
-      }
-
-      else if (arraysIdentical(count, [0,2,1,1,0]))
-      {
-	    jugada = 3;
-        full(cards, count);
-      }
-	  
-      else if (((escalera(cards))[0]) == 1)
-      {
-  	    printEscalera(cards);
-      }
-
-      else if (arraysIdentical(count, [0,4,0,1,0]))
-      {
-	    jugada = 5;
-        trio(cards, count);
-      }
-
-      else if (arraysIdentical(count, [0,3,2,0,0]))
-      {
-	    jugada = 6;
-        doble(cards, count);
-      }
-
-      else if (arraysIdentical(count, [0,5,1,0,0]))
-      {
-	    jugada = 7;
-        pareja(cards, count);
-      }
-	  
-	  else
-	  {
-	    jugada = 0;
-	    console.log("No hay jugada");
-	  }
-	  
-      break;
- 
-    default:
-      error("Error en el numero de cartas en la mano = " + cards[0]);
-      break;
+    }
+	
+    if(i == 11)
+      i = "J";
+    else if(i == 12)
+      i = "Q";
+    else if(i == 13)
+      i = "K";
+	ret = "Carta mas alta: " + i;
+    console.log(ret);
   }
 }
 
@@ -460,7 +371,6 @@ function escalera(cards)
 
 function printEscalera(cards)
 {
-	  jugada = 4;
     s = escalera(cards)[1];
     if(s == 14)
     {
@@ -518,10 +428,10 @@ function escaleraPalo(list)
   palo = temp;
   return escalera(start_arrays(nList)[0]);
 }
+
 function printEscaleraPalo(cards)
 {
-  jugada = 1;
-	s = escalera(cards)[1];
+  s = escalera(cards)[1];
   if(s == 14)
   {
     ret = "Escalera de palo \"real\": 10 a As" + " (" + palo + ")";
@@ -534,6 +444,160 @@ function printEscaleraPalo(cards)
   }
 }
 
+function flush(list)
+{
+  var nList = [];
+  
+  var hearts = 0;
+  var spades = 0;
+  var diamonds = 0;
+  var clubs = 0;
+  
+  var temp = "nada";
+  
+  for(i = 1; i < list.length; i++)
+  {
+    if (list[i][1] == "hearts")
+	  hearts ++;
+	else if (list[i][1] == "spades")
+	  spades ++;
+	else if (list[i][1] == "clubs")
+	  clubs ++;
+	else if (list[i][1] == "diamonds")
+	  diamonds ++;
+  }
+  
+  if (hearts >= 5)
+    temp = "hearts";
+  else if (spades >= 5)
+    temp = "spades";
+  else if (clubs >= 5)
+    temp = "clubs";
+  else if (diamonds >= 5)
+    temp = "diamonds";
+  
+  if(temp != "nada")
+  {
+    var j = 1;
+    for(i = 1; i < list.length; i++)
+    {
+      if(list[i][1] == temp)
+      {
+        nList[j] = list[i];
+        j++;
+      }
+    }
+  
+    var car = (start_arrays(nList)[0]);
+    var k = 0;
+    var s = 0;
+    var l = 0;
+    for(i = 1; i < car.length; i++)
+    {
+      if (car[i] >= 1)
+	  {
+	    k++;
+	    l = i;
+      }
+      else if(car[i] == 0)
+      {
+	    if(s < k)
+	      s = k;
+        k = 0;
+      }
+    }
+    if(k < 5 && s < 5)
+    {
+	  if(car[1] >= 1)
+	    l = "As"
+      var list = [1, l];
+      return list; 
+    }
+    else
+    {
+     return [0, 0];
+    }
+  }
+  else
+    return [0, 0];
+}
+function printFlush(s)
+{
+  if(s == 11)
+    s = "J";
+  else if(s == 12)
+    s = "Q";
+  else if(s == 13)
+    s = "K";
+  ret = "Flush de " + s;
+  console.log(ret);
+}
+
+/*
+#####################################################################
+#####################################################################
+#####################################################################
+*/
+
+function printHand(list)
+{
+  document.write("Cartas en mano:");
+  document.write("<br>");
+  document.write("<br>");
+  for(var i = 1; i < list.length; i++)
+  {
+    var s = list[i][0];
+    if(s == 11)
+      s = "J";
+    else if(s == 12)
+      s = "Q";
+    else if(s == 13)
+      s = "K";
+    document.write(s);
+    document.write(" ");
+    document.write(list[i][1]);
+    document.write("<br>");
+  }
+  document.write("<br>");
+
+
+  document.write(ret);
+  document.write("<br>");
+  document.write("<br>");
+  document.write("<br>");
+}
+
+/*
+#####################################################################
+#####################################################################
+#####################################################################
+*/
+
+function factorial(num)
+{
+  var rval=1;
+  for (var i = 2; i <= num; i++)
+    rval = rval * i;
+  return rval;
+}
+
+function binomial(n, k)
+{
+  return ( factorial(n) / ( factorial(n-k) * factorial(k) ) );
+}
+
+var numParejas = binomial(4, 2) * 13 * binomial(12, 3) * Math.pow(4, 3);
+var numParejasDobles = binomial(13, 2) * binomial(4, 2) * binomial(4, 2) * 11 * 4;
+var numTrios = binomial(4, 3) * 13 * binomial(12, 2) * Math.pow(4, 2);
+var numFulls = binomial(4, 3) * binomial(13, 2) * binomial(4, 2) * 2;
+var numPokers = 13 * 12 * 4;
+var numEscalerasPalo = 10 * 4;
+var numEscaleras = ( 10 * Math.pow(4, 5) ) - 10 * 4;
+var numAlta = (binomial(13, 5) - 10) * (Math.pow(4, 5) - 4);
+var numFlush = (binomial(13, 5) * 4) - 4 * 10;
+var numTotal = numParejas + numParejasDobles + numTrios + numPokers + numFulls +
+numEscalerasPalo + numEscaleras + numAlta + numFlush;
+
 /*
 #####################################################################
 #####################################################################
@@ -544,45 +608,49 @@ function printEscaleraPalo(cards)
 hand([5, [1, "hearts"], [10, "hearts"], [11, "hearts"], [12, "hearts"], [13, "hearts"]]);
 console.log("\n");
 console.log("\n");
+printHand(mano);
 hand([6, [1, "hearts"], [10, "hearts"], [11, "hearts"], [12, "hearts"], [13, "hearts"], [9, "hearts"]]);
 console.log("\n");
 console.log("\n");
+printHand(mano);
 hand([7, [1, "hearts"], [10, "hearts"], [11, "hearts"], [12, "hearts"], [13, "hearts"], [9, "hearts"], [8, "hearts"]]);
 console.log("\n");
 console.log("\n");
+printHand(mano);
 hand([5, [1, "hearts"], [10, "clubs"], [11, "hearts"], [12, "spades"], [13, "hearts"]]);
 console.log("\n");
 console.log("\n");
+printHand(mano);
 hand([6, [1, "hearts"], [10, "hearts"], [11, "hearts"], [12, "diamonds"], [13, "clubs"], [9, "hearts"]]);
 console.log("\n");
 console.log("\n");
-hand([7, [1, "hearts"], [10, "hearts"], [11, "spades"], [12, "hearts"], [13, "hearts"], [9, "hearts"], [8, "hearts"]]);
+printHand(mano);
+*/
+/*
+hand(generate_hand(5));
+printHand(mano);
+console.log("\n");
+console.log("\n");
+hand(generate_hand(6));
+printHand(mano);
+console.log("\n");
+console.log("\n");
+hand(generate_hand(7));
+printHand(mano);
+console.log("\n");
+console.log("\n");
 */
 
-hand(generate_hand(5));
-console.log("\n");
-console.log("\n");
-hand(generate_hand(5));
-console.log("\n");
-console.log("\n");
-hand(generate_hand(5));
-console.log("\n");
-console.log("\n");
-
-document.write("Cartas en mano:");
-document.write("<br>");
-document.write("<br>");
-for(var i = 1; i < list.length; i++)
+var g = 0;
+while(jugada != 4 && g < 30)
 {
-  document.write(list[i][0]);
-  document.write(" ");
-  document.write(list[i][1]);
-  document.write("<br>");
+  g++;
+  hand(generate_hand(5));
+  printHand(mano);
+  console.log("\n");
+  console.log("\n");
 }
-document.write("<br>");
-document.write("<br>");
 
-document.write(ret);
 //-->
 </script>
 </body>
